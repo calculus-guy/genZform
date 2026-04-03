@@ -14,6 +14,10 @@ if (env.nodeEnv !== 'production') {
   app.use(morgan('dev'));
 }
 
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 app.use(helmet());
 app.use(cors({
   origin: ['https://Tf.thegenzhr.com', 'https://talentfactory.netlify.app', 'http://localhost:5000'],
