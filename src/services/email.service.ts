@@ -1,4 +1,3 @@
-import nodemailer from 'nodemailer';
 import { env } from '../config/env';
 import { confirmationTemplate } from '../templates/confirmation.html';
 
@@ -8,16 +7,6 @@ export interface SendConfirmationOptions {
   firstName?: string;
   formType: 'learner' | 'instructor' | 'waitlist';
 }
-
-const transporter = nodemailer.createTransport({
-  host: 'smtp-relay.brevo.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: env.smtpUser,
-    pass: env.brevoApiKey,
-  },
-});
 
 export async function sendConfirmation(options: SendConfirmationOptions): Promise<void> {
   const { to, subject, firstName, formType } = options;
@@ -29,14 +18,31 @@ export async function sendConfirmation(options: SendConfirmationOptions): Promis
   });
 
   try {
-    await transporter.sendMail({
-      from: `"${env.smtpFromName}" <${env.smtpFromEmail}>`,
-      to,
-      subject,
-      html,
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'api-key': env.brevoApiKey,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        sender: {
+          name: env.smtpFromName,
+          email: env.smtpFromEmail,
+        },
+        to: [{ email: to }],
+        subject: subject,
+        htmlContent: html,
+      }),
     });
-    console.log(`[email] Confirmation sent to ${to}`);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(JSON.stringify(errorData));
+    }
+
+    console.log(`[email] Confirmation sent to ${to} via Brevo API`);
   } catch (error) {
-    console.error(`[email] Failed to send to ${to}: ${error}`);
+    console.error(`[email] Failed to send to ${to} via Brevo API: ${error}`);
   }
 }
