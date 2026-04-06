@@ -43,7 +43,7 @@ export const getWaitlist = asyncHandler(async (req: Request, res: Response) => {
     page: req.query.page ? Number(req.query.page) : undefined,
     limit: req.query.limit ? Number(req.query.limit) : undefined,
     email: req.query.email as string | undefined,
-    name: req.query.name as string | undefined,
+    role: req.query.role as string | undefined,
   };
   const data = await adminService.getRecords(WaitlistEntry, query);
   return successResponse(res, 200, "Waitlist records", data);

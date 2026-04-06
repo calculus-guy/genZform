@@ -12,6 +12,7 @@ interface PaginatedQuery {
   limit?: number;
   email?: string;
   name?: string;
+  role?: string;
 }
 
 interface PaginatedResult<T> {
@@ -92,6 +93,10 @@ export async function getRecords<T>(
   } else if (query.name) {
     const nameRegex = { $regex: query.name, $options: "i" };
     filter.$or = [{ firstName: nameRegex }, { lastName: nameRegex }];
+  }
+
+  if (query.role) {
+    filter.role = query.role;
   }
 
   const [total, records] = await Promise.all([
