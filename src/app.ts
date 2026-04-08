@@ -20,7 +20,7 @@ app.get('/health', (req, res) => {
 
 app.use(helmet());
 app.use(cors({
-  origin: ['https://Tf.thegenzhr.com', 'https://talentfactory.netlify.app', 'http://localhost:5000'],
+  origin: ['https://tf.thegenzhr.com', 'https://talentfactory.netlify.app', 'http://localhost:5000'],
   credentials: true,
 }));
 app.use(express.json({ limit: '1mb' }));
