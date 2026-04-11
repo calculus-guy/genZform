@@ -2,6 +2,7 @@ export interface ConfirmationTemplateOptions {
   firstName?: string;
   formType: 'learner' | 'instructor' | 'waitlist';
   appName?: string;
+  communityLink?: string;
 }
 
 const formTypeLabel: Record<ConfirmationTemplateOptions['formType'], string> = {
@@ -11,13 +12,21 @@ const formTypeLabel: Record<ConfirmationTemplateOptions['formType'], string> = {
 };
 
 export function confirmationTemplate(options: ConfirmationTemplateOptions): string {
-  const { firstName, formType, appName = 'Talent Factory' } = options;
+  const { firstName, formType, appName = 'Talent Factory', communityLink } = options;
 
   const greeting = firstName && firstName.trim()
     ? `Hi ${firstName.trim()},`
     : 'Hi there,';
 
   const label = formTypeLabel[formType];
+
+  const communitySection = communityLink ? `
+              <p style="margin:0 0 16px;font-size:15px;color:#374151;line-height:1.6;">
+                In the meantime, join our learner community on WhatsApp to connect with others and stay updated:
+              </p>
+              <p style="margin:0 0 16px;">
+                <a href="${communityLink}" style="display:inline-block;background-color:#25D366;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:6px;font-size:15px;font-weight:bold;">Join WhatsApp Community</a>
+              </p>` : '';
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -52,6 +61,7 @@ export function confirmationTemplate(options: ConfirmationTemplateOptions): stri
               <p style="margin:0;font-size:15px;color:#374151;line-height:1.6;">
                 We appreciate your interest and will be in touch soon.
               </p>
+              ${communitySection}
             </td>
           </tr>
 

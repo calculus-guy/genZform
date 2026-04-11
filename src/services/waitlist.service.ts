@@ -11,6 +11,7 @@ export async function createWaitlistEntry(data: WaitlistInput) {
       to: data.email,
       subject: "You've been added to the waitlist",
       formType: 'waitlist',
+      communityLink: data.role === 'learner' ? 'https://chat.whatsapp.com/HS2PcSrRIu5ERYD6zLlyEM' : undefined,
     });
   } catch (err) {
     console.error('[waitlist.service] Email error:', err);

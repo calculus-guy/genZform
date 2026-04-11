@@ -6,15 +6,17 @@ export interface SendConfirmationOptions {
   subject: string;
   firstName?: string;
   formType: 'learner' | 'instructor' | 'waitlist';
+  communityLink?: string;
 }
 
 export async function sendConfirmation(options: SendConfirmationOptions): Promise<void> {
-  const { to, subject, firstName, formType } = options;
+  const { to, subject, firstName, formType, communityLink } = options;
 
   const html = confirmationTemplate({
     firstName,
     formType,
     appName: env.smtpFromName,
+    communityLink,
   });
 
   try {
